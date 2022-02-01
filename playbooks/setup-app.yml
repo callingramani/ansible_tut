@@ -1,0 +1,46 @@
+# setup-app.yml
+
+---
+  - hosts: webservers
+    become: true
+    
+    vars: 
+      path_to_app: "/var/www/html"
+
+    tasks:
+      - name: Copying php to apache2
+        copy:
+          src: ../index.php
+          dest: "{{ path_to_app }}"
+
+      - name: Copy contents from jinja
+        copy:
+          dest: "{{ path_to_app }}/info.php"
+          content: "<h1> Info from our webserver {{ ansible_hostname }} </h1>"
+        notify:
+            - Restart apache
+
+      - name: List directory contents
+        command: ls -la {{ path_to_app }}
+        register: dir_contents
+
+      - name:  Debug the directory output
+        debug: 
+          msg: "{{ dir_contents }}"
+
+      - name: Chnage Directory Index
+        lineinfile: 
+          path: /etc/apache2/mods-enabled/dir.conf
+          search_string: 'Directory'
+          line: DirectoryIndex index.php index.html index.cgi index.pl index.php index.xhtml index.htm 
+        notify:
+            - Restart apache
+      
+      - name: Ensure apache restarts
+        service: name=apache2 daemon_reload=yes enabled=yes 
+
+    handlers:
+    - name: Restart apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted

@@ -1,0 +1,29 @@
+# setup-lb.yml
+---
+    - hosts: loadbalancer
+      become: true
+      tasks: 
+        - name: Creating template
+          blockinfile:
+            path: /etc/apache2/sites-available/000-default.conf
+            block: |
+                      ProxyRequests off
+                      <Proxy balancer://webcluster >
+                        {% for hosts in groups['webservers'] %}
+                          BalancerMember http://{{hostvars[hosts]['ansible_host']}}
+                        {% endfor %}
+                          ProxySet lbmethod=byrequests
+                      </Proxy>
+
+                      # Optional
+                      <Location /balancer-manager>
+                        SetHandler balancer-manager
+                      </Location>
+
+                      ProxyPass /balancer-manager !
+                      ProxyPass / balancer://webcluster/
+            insertbefore: "^</VirtualHost>\\s?$"
+        - name: restart apache
+          service: name=apache2 state=restarted
+      
+        

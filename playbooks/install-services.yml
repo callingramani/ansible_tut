@@ -1,0 +1,20 @@
+# apache.yml
+---
+  - hosts: loadbalancer
+    become: yes
+    tasks:
+      - name: Install Apache  
+        apt: name=apache2 state=present
+      - name: Ensure apache restarts
+        service: name=apache2 daemon_reload=yes enabled=yes
+  - hosts: webservers
+    become: yes
+    tasks:
+      - name: Installing services
+        apt:
+          name:
+            - apache2
+            - php
+          state: present
+      - name: Ensure apache restarts
+        service: name=apache2 daemon_reload=yes enabled=yes

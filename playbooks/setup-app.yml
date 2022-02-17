@@ -6,17 +6,26 @@
     
     vars: 
       path_to_app: "/var/www/html"
-
+    
+    vars_prompt: 
+     - name: "upload_var"
+       prompt: " Upload the index.php file "
+     - name: "create_var"
+       prompt: " Crete the info.php page "
+       
     tasks:
+
       - name: Copying php to apache2
         copy:
           src: ../index.php
           dest: "{{ path_to_app }}"
+        when: upload_var == 'yes'
 
       - name: Copy contents from jinja
         copy:
           dest: "{{ path_to_app }}/info.php"
           content: "<h1> Info from our webserver {{ ansible_hostname }} </h1>"
+        when: create_var == 'yes'
         notify:
             - Restart apache
 

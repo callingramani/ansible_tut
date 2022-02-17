@@ -3,5 +3,13 @@
   - hosts: webservers:loadbalancer
     become: true
     tasks:
-     -  name: Check apach status
-        command: service apache2 status
+     - name: Check apach status
+       command: service apache2 status
+       args:
+         warn: no
+       changed_when: false
+
+     - name: Ignore
+       command: /bin/false
+       ignore_errors: yes
+

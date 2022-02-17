@@ -1,0 +1,14 @@
+---
+
+working_dir: /home/ramani_ankit551_gmail_com/ansible_tut
+
+services_list: 
+- httpd
+- ssh
+- php
+
+share_paths:
+    nfs: /opt/ansible
+    cifs: /opt/ansible
+    iscsi: /opt/ansible
+ 

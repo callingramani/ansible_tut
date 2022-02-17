@@ -1,0 +1,6 @@
+---
+plugin: gcp_compute
+projects:
+   - graceful-trees-340717
+auth_kind: serviceaccount
+service_account_file: graceful-trees-340717-ff1a56976221.json

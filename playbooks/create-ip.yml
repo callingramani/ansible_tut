@@ -1,0 +1,20 @@
+- name: Create IP address
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    service_account_file: /home/ramani_ankit551_gmail_com/ansible_tut/graceful-trees-340717-ff1a56976221.json
+    project: graceful-trees-340717
+    auth_kind: serviceaccount
+
+  tasks:
+
+   - name: Allocate an IP Address
+     gcp_compute_address:
+         state: present
+         name: 'test-address1'
+         region: 'us-central1'
+         project: "{{ project }}"
+         auth_kind: "{{ auth_kind }}"
+         service_account_file: "{{ service_account_file }}"
+

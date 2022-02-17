@@ -1,0 +1,25 @@
+---
+ - hosts: localhost
+   become: true
+   tasks:
+       - name: Create a work dir
+         file: 
+            path: "{{ working_dir }}"
+            state: directory
+       - name: Use a list
+         lineinfile:
+            path: "{{ working_dir }}/services.txt"
+            create:  yes
+            line:  "{{ services_list }}"
+         register:  service_output
+       - name: use dictionary
+         command: ls -la "{{ share_paths['nfs'] }}"
+         register: cmd_output
+       - name: debug
+         debug: 
+           msg: "{{ cmd_output }}"
+       - name: view ouput in file
+         copy:
+            content: "{{ cmd_output }}"
+            dest: "{{ working_dir }}/output.txt" 
+                  
